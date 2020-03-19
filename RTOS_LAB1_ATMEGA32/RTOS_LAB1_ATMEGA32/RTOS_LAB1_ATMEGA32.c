@@ -61,9 +61,9 @@ void vxtask2 (void*pvParamter)
 	{
 		lcd_clrScreen();
 		
-		for (i =0; i<7 ; i++  )
+		for (i =7; i>0 ; i--  )
 		{
-			lcd_disp_string_xy("world" , 1 , 7-i);
+			lcd_disp_string_xy("world" , 1 , i);
 			
 			_delay_ms(100);
 			
