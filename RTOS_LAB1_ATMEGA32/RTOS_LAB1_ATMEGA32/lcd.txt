@@ -1,0 +1,50 @@
+/*
+ * lcd.h
+ *
+ * Created: 19-Mar-20 10:08:39 PM
+ *  Author: TARGET
+ */ 
+
+
+#ifndef LCD_H_
+#define LCD_H_
+
+
+	///*initialize LCD*/
+	//lcd_init();	
+	///*Creat tasks*/
+	//xTaskCreate(task1_code,NULL,85,NULL,TASK1_PRIORITY,NULL);
+	//xTaskCreate(task2_code,NULL,configMINIMAL_STACK_SIZE,NULL,TASK2_PRIORITY,NULL);
+	///*start Scheduler */
+	//vTaskStartScheduler();
+	
+
+
+void task1_code(void*pvParamter)
+{
+	
+	for (;;)
+	{
+		lcd_clrScreen();
+		lcd_gotoxy(0,3 );
+		lcd_dispString("I am Task 1");
+		_delay_ms(10000);
+	}
+		
+}
+
+/*Task 2 Code*/
+ void task2_code(void*pvParamter)
+{
+	while(1)
+	{
+		lcd_clrScreen();
+		lcd_dispString("I am Task 2");	
+		_delay_ms(10000);
+		
+	}
+}
+
+
+
+#endif /* LCD_H_ */
