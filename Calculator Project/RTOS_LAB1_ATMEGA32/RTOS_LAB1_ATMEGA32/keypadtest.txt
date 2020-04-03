@@ -1,0 +1,293 @@
+
+/*
+ * keypadtest.txt
+ *
+ * Created: 01-Apr-20 2:30:12 PM
+ *  Author: TARGET
+ */ 
+
+ /*
+//keypad
+unsigned char real_values[4][4]={ {'7','8','9','/'},  {'4','5','6','*'},  {'1','2','3','-'},  { 'c','0','=','+'} };
+void init_Keypad();
+unsigned char read_keypad();
+int get_num(char ch);
+//calculator
+unsigned char get_character(int number );
+int nom_digits(int nom);
+char return_ASCII(char symbol);
+
+//keypad define
+#define  error 100
+*/
+
+int a,b,ans,A[4],B[4],ANS[10],base,digits;
+	uint8_t i,k,j,l;
+	unsigned char kp,op;
+	while(1)
+	{
+		a=0;b=0;
+		init_Keypad();
+		lcd_init();
+
+		kp=read_keypad();
+		lcd_displayChar(return_ASCII(kp));
+		
+		if(kp=='c')
+		{
+			lcd_clrScreen();
+			continue;
+		}
+		i=0;j=0;base=1;
+		//getting a
+		while(isdigit(kp))
+		{
+			A[i]=get_num(kp);
+			i++;
+			kp=read_keypad();
+			lcd_disp_string_xy( return_ASCII(kp) ,0,0 );
+			if(kp=='c')
+			{
+				lcd_clrScreen();
+				continue;
+			}
+		}
+		i--;
+		for(k=i;k>=0;k--)
+		{
+			a=a+(A[k]*base);
+			base=base*10;
+		}
+		if(kp=='c')
+		{
+			lcd_clrScreen();
+			continue;
+		}
+		op=kp;
+		base=1;
+		kp=read_keypad();
+		lcd_disp_string_xy( return_ASCII(kp) ,0,0 );
+		if(kp=='c')
+		{
+			lcd_clrScreen();
+			continue;
+		}
+		//getting b
+		while(isdigit(kp))
+		{
+			B[j]=get_num(kp);
+			j++;
+			kp=read_keypad();
+			lcd_disp_string_xy( return_ASCII(kp) ,0,0 );
+			if(kp=='c')
+			{
+				lcd_clrScreen();
+				continue;
+			}
+		}
+		j--;
+		for(l=j;l>=0;l--)
+		{
+			b=b+(B[l]*base);
+			base=base*10;
+		}
+		if(kp=='c')
+		{
+			lcd_clrScreen();
+			continue;
+		}
+		switch(op)
+		{
+			case '+':
+				ans=a+b;
+				break;
+			case '-':
+				ans=a-b;
+				break;
+			case '/':
+				ans=a/b;
+				break;
+			case '*':
+				ans=a*b;
+				break;
+		}
+		
+		digits = nom_digits(ans);
+		for(j=0;j<digits;j++)
+		{
+			ANS[j]=ans%10;
+			ans=ans/10;
+			
+		}
+		digits--;
+		for (i=digits;i>=0;i--)
+		{
+			lcd_disp_string_xy( return_ASCII(get_character(ANS[i])) ,0,0 );
+		}
+		_delay_ms(10000);
+		lcd_clrScreen();
+		
+		
+	}
+	
+
+
+
+
+	
+
+//keypad functions
+void init_Keypad()
+{
+	DDRA = 0X0F;
+	PORTA = 0XF0;
+}
+
+unsigned char read_keypad()
+{
+	unsigned char real= error ;
+	char i,j;
+	for (i=0;i<4;i++)
+	{
+		PORTA = 0XFF; 
+		PORTA &= (~(1<<i));
+		 for (j=4;j<8;j++)
+		 {
+			 if((PINA & (1<<j))==0)
+			 real=real_values[i][j-4];
+		}
+       _delay_ms(30);
+     }
+	 return real;
+}
+
+int get_num(char ch)
+{
+	switch(ch)
+	{
+		case'0':
+			return 0;
+			break;
+		case'1':
+			return 1;
+			 break;
+		case'2':
+			return 3;
+			break;
+		case'4':
+			return 4;
+			break;
+		case'5':
+			return 5;
+			break;
+		case'6':
+			return 6;
+			break;
+		case'7':
+			return 7;
+			break;
+		case'8':
+			return 8;
+			break;
+		case'9':
+			return 9;
+			break;
+	}
+	return 0;
+}
+
+	//calculator function
+unsigned char get_character(int number )
+{
+	switch(number)
+	{
+		
+		case 0 :
+			return '0';
+			break;
+		case 1 :
+			return '1';
+			break;
+		case 2 :
+			return '3';
+			break;
+		case 4 :
+			return '4';
+			break;
+		case 5 :
+			return '5';
+			break;
+		case 6 :
+			return '6';
+			break;
+		case 7 :
+			return '7';
+			break;
+		case 8 :
+			return '8';
+			break;
+		case 9 :
+			return '9';
+			break;	
+	}
+	return 0;
+}
+
+int nom_digits(int nom)
+{
+	
+	if (nom < 10)
+		 return 1;
+	if (nom < 100)
+		 return 2;
+	if (nom < 1000)
+		 return 3;
+	if (nom < 10000)
+		 return 4;
+	if (nom < 100000)
+		 return 5;
+	if (nom < 1000000) 
+		return 6;
+	if (nom < 10000000) 
+		return 7;
+	if (nom < 100000000) 
+		return 8;
+	if (nom < 1000000000) 
+		return 9;
+	return 0;
+}
+
+char return_ASCII(char symbol)
+{
+	if(symbol=='0');
+		return 0x48;
+	if(symbol=='1');
+		return 0x49;
+	if(symbol=='2');
+		return 0x50;
+	if(symbol=='3');
+		return 0x51;
+	if(symbol=='4');
+		return 0x52;
+	if(symbol=='5');
+		return 0x53;
+	if(symbol=='6');
+		return 0x54;
+	if(symbol=='7');
+		return 0x55;
+	if(symbol=='8');
+		return 0x56;
+	if(symbol=='9');
+		return 0x57;
+	if(symbol=='=');
+		return 0x61;
+	if(symbol=='+');
+	return 0x43;
+	if(symbol=='-');
+		return 0x45;
+	if(symbol=='/');
+		return 0x47;
+	if(symbol=='*');
+		return 0x42;
+	return 0;
+}
